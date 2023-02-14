@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  app:
+    container_name: service1_app
+    build: ./service1/.
+    ports:
+      - 8081:8081
+    restart: on-failure
+    volumes:
+      - api:/usr/src/app/
+    depends_on:
+      - mongo
+
+  app2:
+    container_name: service2_app
+    build: ./service2/.
+    ports:
+      - 8000:8000
+    restart: on-failure
+
+  mongo:
+    container_name: mongo_container
+    image: mongo:latest
+    restart: always
+    env_file:
+      - ./service1/.env
+#    environment:
+#      - mongo_username=${database_user}
+#      - mongo_password=${database_password}
+    ports:
+      - 27017:27017
+    volumes:
+      - db:/data/db
+
+volumes:
+  db:
+  api:
